@@ -1,0 +1,78 @@
+.card{
+    padding: 9px;
+    margin: 0 auto;
+    width: 54%;
+    background-color: white;
+    color: black;
+    border-radius: 9px;
+    border: 1px solid white;
+    background-image:  linear-gradient(to bottom right, #FFA500, #FF0084);
+    position: relative;
+    overflow: hidden;
+}
+.card .speaker{
+    height: 50px;
+    width: 50px;
+    float: right;
+    position: absolute;
+}
+.card .speaker1{
+    top: 0;
+    left: 0;
+}
+.card .speaker2{
+    top: 0;
+    right: 0;
+    transform: scaleX(-1);
+}
+.card .header{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-weight: 700;
+    color: #ffff;
+    font-size: 0.9em;
+    text-shadow: 1px 1px 2px lightgreen;
+}
+.card .content{
+    text-align: justify;
+    font-weight: 500;
+    padding-left: 15px;
+    color: #dfffff;
+    font-size: 18px;
+    text-shadow: 1px 1px 2pd #dddd;
+}
+@media (max-width: 900px){
+    .card{
+        width: 60%;
+    }
+    .card .speaker{
+        height: 35px;
+        width: 35px;
+    }
+    .card .header{
+        margin-top: 15xpx;
+    }
+}
+@media (max-width:700px){
+    .card{
+        width: 70%;
+    }
+}
+@media (max-width:600px){
+    .card{
+        width: 90%;
+        font-size: 0.8em;
+    }
+    .card .header{
+        margin-bottom: -12px;
+    }
+    .card .content{
+        font-size: 17px;
+    }
+    .card .speaker{
+        height: 30px;
+        width: 30p
+    }
+}

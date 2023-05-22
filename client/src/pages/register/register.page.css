@@ -1,0 +1,255 @@
+*{
+    box-sizing: border-box;
+}
+.register{
+    background-color: white;
+    width: 35%;
+    min-height: 20vh;
+    padding: 13px 18px;
+    transition: all in 1s;
+    margin: 5% auto;
+    left: 50%;
+    transform: translateX(-50%);
+    position: absolute;
+    border-radius: 1px;
+    overflow: hidden;
+}
+.header{
+    padding: 0px 19px;
+}
+.header > .headerContent{
+    font-size: 17px;
+}
+.signUpContent{
+    padding: 0px 19px;
+}
+.loading{
+    opacity: 0.9;
+    pointer-events: none;
+    background-color: #fffdfd;
+    cursor: default;
+    color: rgb(167, 167, 167);
+}
+.loading > button{
+    color: rgb(167, 167, 167);
+}
+.LoadingContent{
+    opacity: 1 !important;
+    width: 110px;
+    padding: 1.1px;
+    background-color: #0067b8;
+    border: 2px solid #0067b8;
+    animation: load 1.5s linear infinite;
+    position: absolute;
+    transition: all 2s;
+}
+@keyframes load{
+    0%{
+        left: 5%;
+        top: 0;
+    }
+    100%{
+        top: 0;
+        left: 85%;
+    }
+}
+#signUp{
+    animation: backward 0.25s linear;
+    transition: all 1s;
+    position: relative;
+}
+@keyframes forward{
+    from{
+        left: 90%;
+    }
+    to{
+        left: 0%;
+    }
+}
+@keyframes backward{
+    from{
+        right: 90%;
+    }
+    to{
+        right: 0%;
+    }
+}
+#signUp input{
+    font-size: 17px;
+    border: none;
+    border-bottom: 1px solid black;
+    margin-bottom: 15px;
+    padding: 6px 10px;
+    width: 98%;
+    outline: none;
+}
+#signUp input:focus{
+    border-bottom: 1px solid #0078d7;
+}
+#signUp span{
+    display: none !important;
+}
+#signUp p{
+    width: 85%;
+}
+#signUp button, .registerButton{
+    display: block;
+    right: 2%;
+    position: absolute;
+    background-color: #0067b8;
+    border: 1px solid #0078d7;
+    padding: 8px 10px;
+    font-size: 15px;
+    font-weight: 600;
+    width: 100px;
+    color: #ffffff;
+    cursor: pointer;
+}
+.registerButton{
+    position: relative;
+    float: right;
+}
+#signUp button:hover, .registerButton:hover{
+    text-decoration: underline;
+    text-decoration-color: #ffffff;
+}
+.showpswd > *{
+    cursor: pointer;
+}
+.showpswd input[type="checkbox"]{
+    float: left !important;
+    width: 20px !important;
+    height: 18px;
+}
+.showpswd label{
+    vertical-align: middle;
+}
+#userEmail{
+    display: grid;
+    grid-template-columns: 1fr 10fr;
+    align-items: center;
+    align-content: center;
+    position: relative;
+    color: rgb(0, 0, 0);
+    font-weight: 500;
+}
+#userEmail > span{
+    border-radius: 50%;
+    padding: 5px;
+    text-align: center;
+    font-weight: bold;
+    margin-right: 5px;
+    vertical-align: middle;
+    cursor: pointer;
+    color: gray;
+}
+#userEmail > span:hover{
+    background-color: rgb(235, 232, 232);
+}
+#phoneLink{
+    display: inline-block;
+    font-size:14px;
+    text-decoration: none;
+    color: #0078d7;
+}
+#phoneLink:hover{
+    color: gray;
+    text-decoration: underline;
+    text-decoration-color: gray;
+}
+.countrySelect label{
+    font-weight: bold;
+    font-size: 13px;
+}
+.countrySelect select{
+    border: none;
+    border-bottom: 1px solid black;
+    font-size: 15px;
+    padding: 8px 0;
+    width: 100%;
+    margin-top: 5px;
+    margin-bottom: 15px;
+}
+.dob{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 4px;
+    align-items: center;
+    margin-bottom: 21px;
+}
+#doblabel{
+    font-size: 13px;
+    font-weight: bold;
+}
+.dob > .date > select, .dob > .month > select, .dob > .year > input{
+    height: 30px;
+    margin: 0px !important;
+    border: none;
+    border-bottom: 1px solid #000000;
+    margin: none;
+    padding: 6px 18px !important;
+    width: 100%;
+    outline: none;
+}
+.countrySelect select:focus{
+    background-color: rgb(239, 236, 236);
+    outline: 1px solid #0067b8;
+}
+#bottomSmall{
+    font-size: smaller;
+    text-align: justify;
+}
+#bottomSmall a{
+    text-decoration: none;
+    color: #0078d7;
+}
+@media screen and (max-width:1000px){
+    .register{
+        width: 50%;
+    }
+}
+@media screen and (max-width:610px){
+    :root{
+        font-size: 16.5px;
+    }
+    select{
+        font-size: 16px;
+        height: 40px;
+        padding-left: 10px !important;
+        outline: none !important;
+        background-color: transparent;
+    }
+    select:focus{
+        overflow: hidden;
+        border: none;
+        border-bottom: 1px solid #000000;
+        border-radius: 0px;
+    }
+    .register{
+        width: 85%;
+        padding: 13px 11px;
+    }
+    .signUpContent{
+        padding: 0 9px;
+    }
+    #signUp button, .registerButton{
+        width: 115px;
+        border-radius: 7px;
+    }
+    .dob > *{
+        width: 93%;
+    }
+}
+@media screen and (max-width:400px){
+    .register{
+        width: 92%;
+        margin:0 auto;
+    }
+    .header{
+        padding-left: 0px;
+    }
+    #userEmail > span{
+        float: left;
+        margin-right: 0px;
+    }
+}

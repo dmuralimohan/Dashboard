@@ -1,0 +1,25 @@
+/*.inputBox{
+    width: 100%;
+    margin: 9px auto auto 15px;
+}
+.inputBox label{
+    font-size: 18px;
+}
+.inputBox input{
+    width: 90%;
+    border: 1px solid black;
+    padding: 7px 18px;
+    font-size: 17px;
+    margin-top: 9px;
+}
+.inputBox span{
+    display: block;
+    font-size: 13px;
+    color: red;
+    margin: 4px auto;
+    width: 90%;
+}
+.inputBox input[type="submit"]{
+    margin: 15px auto;
+    width: 50%;
+}*/

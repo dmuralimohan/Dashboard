@@ -1,0 +1,148 @@
+body{
+    background: linear-gradient(129deg,rgba(10, 10, 10, 0.85),rgba(87, 100, 99, 0.85)), url("../../assets/slide/slide3.jpg") no-repeat;
+}
+.container{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 0px;
+    width: 75%;
+    border: 1px solid black;
+    border-radius: 9px;
+    padding: 5px;
+    overflow: hidden;
+    background-color: #ffffff;
+    margin: 5% auto auto auto;
+    transform: all 1s;
+}
+.container > .form{
+    width: 100%;
+    text-align: justify;
+}
+.container > .form > .header{
+    text-align: center;
+}
+.container > .form > .header > img{
+    border-radius: 50%;
+    height: 80px;
+    width: 80px;
+}
+.container > .form > div{
+    position: relative;
+    transition: all 0.5s;
+}
+.container > .form label{
+    margin-left: 4%;
+    display: block;
+    font-weight: 550;
+}
+.container > .form label:first-child{
+    margin-top: 15px;
+}
+.container > .form input{
+    width: 75%;
+    padding: 9px;
+    border: 1px solid black;
+    margin: 9px auto 5px 9%;
+    display: block;
+    transition: all 1s;
+    font-size: 17px;
+    border-radius: 7px;
+    outline-color: black;
+}
+.container > .form > div > span::before, .container > .form > div > span::after{
+    content: "!!";
+}
+.container > .form > div > span{
+    color: red;
+    font-size: 15px;
+    margin-left: 15%;
+}
+.container > .form > div > input ~ i{
+    display: inline;
+    position: absolute;
+    top: 45%;
+    right: 20%;
+    transform: translate(-10%, 50%);
+    cursor: pointer;
+}
+.container > .form .forgetPassword{
+    margin-left: 11%;
+    margin-top: 10px !important;
+    text-decoration: underline #000000;
+    color: black;
+    font-size: 15px;
+}
+.container > .form > .submit{
+    width: 50%;
+    overflow: hidden;
+    margin: 15px auto;
+}
+.submit input{
+    background-color: #000000;
+    color: #ffffff;
+    border-radius: 15px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    height: 40px;
+    box-shadow: 0 5px 30px hsla(214,3%,59%,.996);
+}
+.submit input:hover{
+    transition: none;
+    background-color: #ff0000;
+    box-shadow: 1px 1px 2px lightgreen;
+}
+.container .newAccount{
+    text-align: center;
+    font-size: 17px;
+}
+.container .newAccount > *{
+    color: #000000;
+}
+.error{
+    color: #ff0000;
+    font-size: medium;
+    margin: auto;
+}
+
+@media screen and (max-width:900px){
+    .container{
+        width: 85%;
+    }
+}
+@media screen and (max-width:610px){
+    body{
+        background: linear-gradient(129deg,rgba(199, 83, 16, 0.85),rgba(12, 160, 96, 0.85)), no-repeat;
+    }
+    .container{
+        display: grid;
+        grid-template-columns: 1fr;
+        width: 90%;
+        border: none;
+        background-color: transparent;
+    }
+    .container > .form > .header > img{
+        height: 90px;
+        width: 90px;
+    }
+    .container > .form > div > label{
+        margin-left: auto;
+    }
+    .container > .form > div > input{
+        width: 90%;
+        margin-left: auto;
+    }
+    .container > .form > div > input ~ i{
+        right: 15%;
+    }
+    .container > .slideshow{
+        display: none;
+    }
+    .container > .form > .submit{
+        width: 62%;
+    }
+    .submit input{
+        height: 45px;
+    }
+}

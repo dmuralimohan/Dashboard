@@ -1,0 +1,47 @@
+.circle{
+    display: block;
+}
+.rotate{
+	height: 70px;
+    width: 70px;
+    border-radius: 50%;
+    border: 3px dotted black;
+    border-top: none;
+    animation: spin 1.5s linear infinite;
+    top: 45%;
+    left: 50%;
+    transform: translateX(-50%, -50%);
+    position: fixed;
+}
+.loadingContent{
+    width: 100%;
+    opacity: 0;
+    animation: opacity 1.5s linear infinite;
+    transition: all 1.5s;
+    font-size: 21px;
+    top: 55%;
+    left: 50%;
+    transform: translateX(-50%, -50%);
+    position: fixed;
+}
+@media screen and (max-width:610px){
+    .rotate, .loadingContent{
+        left: 40%;
+    }
+}
+@keyframes opacity{
+    from{
+        opacity: 0;
+    }
+    to{
+        opacity: 1;
+    }
+}
+@keyframes spin{
+	from{
+    	transform: rotate(0deg);
+    }
+    to{
+    	transform: rotate(360deg);
+    }
+}
