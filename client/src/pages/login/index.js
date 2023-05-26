@@ -42,9 +42,11 @@ const Login = () => {
   const onSubmit = async (data) => {
     try{
         const responseCode = await submitLogin(data);
-        const { from } = location.state || { from: { pathname: '/' } };
+        console.log(responseCode);
+
+        //const { from } = location.state || { from: { pathname: '/' } };
         
-        return navigate(from, { replace: true });
+        //return navigate(from, { replace: true });
     }
     catch(err)
     {

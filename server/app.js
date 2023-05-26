@@ -1,15 +1,18 @@
 const fs = require('fs');
 const path = require('path');
+const fastifyCors = require('fastify-cors');
 
 const logDir = path.join(__dirname, 'logs');
-if(!fs.exitsSync(logDir)){
+if(!fs.existsSync(logDir)){
     fs.mkdirSync(logDir);
 }
+const logFilePath = path.join(logDir, 'app.log');
+const logStream = fs.createWriteStream(logFilePath, { flags: 'a' });
 
 const fastify = require('fastify')({
     logger: {
         level: 'info',
-        stream: fs.createWriteStream(path.join(logDir, 'app.log', {flags: 'a'})),
+        stream: logStream,
         serializers: {
             res(reply) {
                 return {
@@ -24,10 +27,11 @@ const fastify = require('fastify')({
                     path: request.routerPath,
                     parameters: request.parameters,
                     headers: request.headers
-                }
-            }
-        }
-    }
+                };
+            },
+        },
+        dateFormat: () => new Date().toUTCString(),
+    },
 });
 
 const port = process.env.PRODUCTION_PORT || 3001;
@@ -41,16 +45,22 @@ fastify.setErrorHandler((error, request, reply) => {
     });
 });
 
-fastify.register(require('./plugin/db'));
+//To disable cors
+fastify.register(fastifyCors);
+
+// fastify.register(require('./plugins/db'));
 fastify.register(require('./routes'));
 
-
-fastify.listen(port, (err) => {
+fastify.listen({
+    port: port,
+    host: 'localhost'
+}).then((address) => {
+    fastify.log.info("Server is Started in "+ port +" Address:"+ address);
+    console.log("Server is started");
+}).catch((err) => {
     if(err){
         fastify.log.error("Server is not Started, Somthing have Error\n"+ err);
 
         process.exit(1);
     }
-
-    fastify.log.info("Server is Started in "+ port);
-})
+});

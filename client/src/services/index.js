@@ -4,12 +4,13 @@ import { cookies } from "utils";
 export { submitLogin } from "./user";
 
 export const axiosInstance = axios.create({
-    baseURL: "http://localhost:3000"
+    baseURL: "http://localhost:3001"
 })
 
-axiosInstance.interceptors.request.use(function(config){
-    config.headers.Authorization = cookies().get("AUTH_TOKEN");
-    return config;
+axiosInstance.interceptors.request.use(function(request){
+    request.headers.Authorization = cookies().get("AUTH_TOKEN"); 
+    console.log(cookies().get("AUTH_TOKEN"));
+    return request;
     },function (err){
         return Promise.reject(err);
     }
@@ -19,7 +20,7 @@ axiosInstance.interceptors.response.use((response) => {
     return response;
 }, async (err) => {
     const originalRequest = err.config;
-    if(err.response.status === 1001 && !originalRequest._retry)
+    if( err.response && err.response.status && err.response.status === 1001 && !originalRequest._retry)
     {
         axiosInstance.post("/updateAuthToken", {
             data: JSON.stringify(cookies().get("REFRESH_TOKEN"))
@@ -30,4 +31,4 @@ axiosInstance.interceptors.response.use((response) => {
     }
 
     return Promise.reject(err);
-})
+});

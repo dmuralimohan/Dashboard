@@ -2,6 +2,7 @@
     Control all the user Routes with corresponding requests and responses
 */
 
+const fastify = require('fastify')();
 const User = require('../models/user');
 
 async function signIn(request, reply) {
@@ -11,8 +12,11 @@ async function signIn(request, reply) {
             reply.code(401).send("Invalid Credentials");
         }
 
-        const user = User.findOne({ email });
+        fastify.log.info(`User has sign in request ${email}`);
+
+        const user = User.getUserByEmail(email);
         if(!user){
+            fastify.log.info(`User not found Email id: ${email}`);
             reply.code(400).send("User Not Found");
         }
 
@@ -23,9 +27,9 @@ async function signIn(request, reply) {
                 error: "Invalid Credentials"
             });
             
-            fastify.logger.error("User is unable to login Invalid credentials");
+            fastify.log.error("User is unable to login Invalid credentials");
         }
-        fastify.logger.info(`User Logged in Successfully USERNAME: ${email} in ${new Date()}`)
+        fastify.log.info(`User Logged in Successfully USERNAME: ${email} in ${new Date()}`);
 
         const authToken = user.generateAuthToken();
         const refreshToken = user.generateRefreshToken();
@@ -50,9 +54,8 @@ async function signIn(request, reply) {
         reply.status(1005).send({
             message: "Login Successful"
         });
-    }
-    catch(err){
-        fastify.log.err("Something error occurred in login "+ err);
+    } catch(err){
+        fastify.log.error("Something error occurred in login "+ err);
 
         return new Error("Some error occurred in login");
     }
@@ -60,6 +63,15 @@ async function signIn(request, reply) {
 
 async function signUp(request, reply){
     const { email, password, dob, country, firstname, lastname} = request.data;
+
+    fastify.log.info(`User Signup Request landed...\n ${request.data}`);
+
+    reply.status(200).send({
+        message: "You have Registered Sucessfully"
+    });
 }
 
-exports.modules = signIn;
+module.exports = {
+    signIn,
+    signUp
+};
