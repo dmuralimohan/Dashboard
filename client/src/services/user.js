@@ -3,8 +3,9 @@ import { Navigate } from "react-router-dom";
 import { cookies } from "utils";
 
 export const submitLogin = (data) =>{
+    console.log(`Data is before submitting: ${data}`);
     return axiosInstance.post("/signin",{
-        data: data
+        data
     }).then(res => {
         console.log("TOKEN GENERATED SUCCESSFULLY ");
         console.log("TOKEN: "+ cookies.get("AUTH_TOKEN"));

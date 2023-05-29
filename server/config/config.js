@@ -2,6 +2,7 @@
     Configure the environmental variables
 */
 
+require('dotenv').config();
 const config = {
     mongoDBURL: process.env.MONGODB_URL,
 
@@ -17,7 +18,8 @@ const config = {
     databaseURL: process.env.FIREBASE_DATABASE_URL,
     messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
     appId: process.env.FIREBASE_APP_ID,
-    measurementId: process.env.FIREBASE_MEASUREMENT_ID
+    measurementId: process.env.FIREBASE_MEASUREMENT_ID,
+    GOOGLE_APPLICATION_CREDENTIALS: process.env.GOOGLE_APPLICATION_CREDENTIALS
 };
 
 module.exports = config;

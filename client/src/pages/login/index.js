@@ -41,6 +41,7 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     try{
+        console.log(`Data before passing ${JSON.stringify(data)}`);
         const responseCode = await submitLogin(data);
         console.log(responseCode);
 

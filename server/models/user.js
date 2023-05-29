@@ -3,9 +3,9 @@
 */
 
 // const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const config = require('../config/config');
+// const bcrypt = require('bcrypt');
+// const jwt = require('jsonwebtoken');
+// const config = require('../config/config');
 
 // const userSchema = mongoose.Schema({
 //     email: {
@@ -98,6 +98,7 @@ const config = require('../config/config');
 
 const { db } = require('../plugins/firebase');
 const userSchema = require('../schemas/userSchema.js');
+const logger = require('../plugins/fastify').logger;
 
 const collection = db.collection('users');
 
@@ -126,15 +127,22 @@ const getUser = async (userId) => {
 };
 
 const getUserByEmail = async (emailId) => {
-    const querySnapshot = collection.where('email', 'email ==', emailId).get();
+    logger.info("Getting email to get User Details... EmailId is: "+ emailId);
 
-    if(querySnapshot.empty){
-        return null;
+    try {
+      const querySnapshot = await collection.where('email', '==', emailId).get();
+      logger.info("The data is: "+ querySnapshot);
+
+      if(querySnapshot.docs && querySnapshot.docs[0]){
+        const user = querySnapshot.docs[0].data();
+        logger.info("Data is fetched from email id: "+ user);
+        return user;
+      }
+      
+      return null;
+    } catch (error) {
+      return null;
     }
-
-    const user = querySnapshot.docs[0].data();
-
-    return user;
 }
 
 const updateUser = async (userId, updatedUserData) => {
