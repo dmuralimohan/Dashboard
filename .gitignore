@@ -9,3 +9,6 @@ node_modules/
 
 # Ignore logs
 logs/
+
+# Ignore keyfile
+plugins/keyfile.json
