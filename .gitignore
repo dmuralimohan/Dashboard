@@ -11,4 +11,4 @@ node_modules/
 logs/
 
 # Ignore keyfile
-plugins/keyfile.json
+server/plugins/keyfile.json
