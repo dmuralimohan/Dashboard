@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Input, Button, Select, Option } from "components";
 import countryCodes from "country-codes-list";
+import { submitRegister } from "services";
 import { DateInfo } from "common";
 
 import "./register.page.css";
@@ -182,13 +183,15 @@ const Register = ({email}) => {
         register({name: "email"}, {value: email});
         //handleEmailSubmit(email);
     }
-    const onFormSubmit = (d) => {
+    const onFormSubmit = async (d) => {
         d.dob = `${d.birthdate}-${d.birthmonth}-${d.birthyear}`;
         delete d.birthdate;
         delete d.birthmonth;
         delete d.birthyear;
 
         console.log(d);
+        const result = await submitRegister(d);
+        console.log(result);
     }
     return(
         <form className={isLoading ? "register loading" : "register"} disabled = {isLoading} method= "post" onSubmit={handleSubmit(onFormSubmit)}>
@@ -307,7 +310,7 @@ const Register = ({email}) => {
                         }
                         >
                             {
-                                countryCodes.all().map(country =>
+                                countryCodes && countryCodes.all().map(country =>
                                     <Option key={country.countryCode} value={country.countryCode}>
                                         {country.countryNameEn}
                                     </Option>

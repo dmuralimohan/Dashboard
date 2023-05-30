@@ -14,5 +14,10 @@ export const submitLogin = (data) =>{
 }
 
 export const submitRegister = (data) =>{
-    return axiosInstance.post()
+    return axiosInstance.post("/signup", {
+        data
+    }).then( res  => {
+        console.log(res);
+        return res;
+    }).catch(err  => err);
 }

@@ -17,17 +17,24 @@ const firebaseConfig = {
     measurementId: config.measurementId
   };
 
-admin.initializeApp(firebaseConfig);
-admin.database.enableLogging(true);
+//admin.initializeApp(firebaseConfig);
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+
+/*admin.database.enableLogging(true);
 admin.firestore().settings({
     host: 'localhost:3001',
     ssl: false,
     experimentalForceLongPolling: true,
     logLevel: 'debug',
-  });
+});*/
+
+const auth = admin.auth();
 const db = admin.firestore();
 
 module.exports = {
     admin,
+    auth,
     db
 };

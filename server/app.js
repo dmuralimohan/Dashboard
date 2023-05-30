@@ -38,7 +38,8 @@ const logger = fastifyJs.logger;
 const port = process.env.PRODUCTION_PORT || 3001;
 
 fastify.setErrorHandler((error, request, reply) => {
-   logger.error("Some Internal Error Occured in the Server\n"+ error);
+   logger.trace("Some Internal Error Occured in the Server\n"+ error);
+   console.log(error);
 
     reply.status(500).send({
         error: "Internal Server Error",
@@ -47,7 +48,8 @@ fastify.setErrorHandler((error, request, reply) => {
 });
 
 fastify.addHook('onSend', (request, reply, payload, done) => {
-    logger.info("Request is processed "+ JSON.stringify(request));
+    logger.info("Request is processed "+ request.url);
+    console.log("Request is sended "+ request.url);
     done();
 });
 
@@ -58,9 +60,9 @@ fastify.addHook("onClose", (instance, done) => {
 
 //To disable cors
 fastify.register(fastifyCors, {
-    origin: "*",
-    methods: ["*"],
-    allowedHeaders: "*"
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: '*'
 });
 
 // fastify.register(require('./plugins/db'));
@@ -74,7 +76,7 @@ fastify.listen({
     console.log("Server is started");
 }).catch((err) => {
     if(err){
-        logger.error("Server is not Started, Somthing have Error\n"+ err);
+        logger.trace("Server is not Started, Somthing have Error\n"+ err);
 
         process.exit(1);
     }

@@ -12,6 +12,11 @@ if(!fs.existsSync(logDir)){
 const logFilePath = path.join(logDir, 'app.log');
 const logStream = fs.createWriteStream(logFilePath, { flags: 'a' });
 
+const logTracer = (log) => {
+    console.error(log);
+    console.trace(log);
+}
+
 const fastify = require('fastify')({
     logger: {
         level: 'info',
@@ -33,6 +38,7 @@ const fastify = require('fastify')({
                 };
             },
         },
+        logTracer
     },
 });
 
@@ -41,7 +47,10 @@ const logger = {
         fastify.log.info(log);
     },
     error : (log) => {
-        fastify.log.error(log)
+        fastify.log.error(log);
+    },
+    trace : (log) => {
+        fastify.log.trace(log);
     }
 }
 

@@ -31,7 +31,7 @@ const authenticate = (request, reply, done) => {
     }
     catch(err)
     {
-        fastify.logger.error("Authentication Token Verification has some error occured");
+        fastify.logger.error("Authentication Token Verification has some error occured ");
 
         return reply.status(401).send({
             message: "Authorization not verified some Internal server occurred"

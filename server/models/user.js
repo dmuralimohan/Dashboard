@@ -1,5 +1,5 @@
 /*
-    Configuring users Database Scehema with credentials
+    Configuring users Cloud Firebase and Generating Token
 */
 
 // const mongoose = require('mongoose');
@@ -95,23 +95,42 @@
 
 // module.exports = User;
 
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
-const { db } = require('../plugins/firebase');
+const { auth, db } = require('../plugins/firebase');
 const userSchema = require('../schemas/userSchema.js');
 const logger = require('../plugins/fastify').logger;
+const config = require('../config/config');
+
+/*
+  Interacting Cloud firestore from firebase
+*/
 
 const collection = db.collection('users');
 
 const createUser = async (userData) => {
   try {
-        await validateUserSchema(userData);
+    const emailId = userData.emailId;
+    const isExists = await isUserExistsByEmailId(emailId);
 
+    if(isExists) {
+      return "User has Already Exists";
+    }
+
+    this.validateUserSchema(userData);
+    userData.password = await bcrypt.hash(userData.password, 10);
+    console.log(`hashed password ${userData.password}`);
+    logger.info("Registered user data is:"+JSON.stringify(userData))
     const userRef = collection.doc();
     await userRef.set(userData);
+  
+    logger.info("User has registered successfully " + userRef.id);
+    console.log("User has registered successfully "+ userRef.id);
 
-    return userRef.id;
+    return userRef;
   } catch (error) {
-    return new Error("Unable to create user");
+    return error;
   }
 };
 
@@ -130,17 +149,42 @@ const getUserByEmail = async (emailId) => {
     logger.info("Getting email to get User Details... EmailId is: "+ emailId);
 
     try {
+
+      /*
+        Alternative approach
+        const userRecord = await auth.getUserByEmail(emailId);
+      */
       const querySnapshot = await collection.where('email', '==', emailId).get();
-      logger.info("The data is: "+ querySnapshot);
+      logger.info(querySnapshot.docs && querySnapshot.docs[0]);
 
       if(querySnapshot.docs && querySnapshot.docs[0]){
-        const user = querySnapshot.docs[0].data();
-        logger.info("Data is fetched from email id: "+ user);
-        return user;
+        const userData = querySnapshot.docs[0].data();
+        logger.info("Data is fetched from email id: "+ userData);
+        logger.info("The data is: "+ JSON.stringify(querySnapshot.docs[0].data()));
+        return userData;
       }
+
+      logger.trace("User not Found : "+ emailId);
       
       return null;
     } catch (error) {
+      logger.trace("Somethign error occured in Fetching Data from Email id ");
+      return null;
+    }
+}
+
+const getUserIdByEmailId = async (emailId) => {
+    try {
+      logger.info("Getting email to get User Details from getUserByEmailIdAdmin... EmailId is: "+ emailId);
+
+      const userRecord = await auth.getUserByEmail(emailId);
+      const userId = userRecord.uid;
+
+      if(userId){
+        return userId;
+      }
+    } catch (err) {
+      logger.trace("Something Error occured in getUserByEmailId1 "+ err);
       return null;
     }
 }
@@ -157,7 +201,7 @@ const updateUser = async (userId, updatedUserData) => {
     }
 };
 
-const deleteUser = async (userId) => {
+const deleteUserById = async (userId) => {
   try {
     const userRef = collection.doc(userId);
     await userRef.delete();
@@ -167,6 +211,25 @@ const deleteUser = async (userId) => {
   }
 };
 
+const deleteUserByEmail = async (emailId) => {
+  try {
+    console.log("emailid: "+ emailId);
+    const querySnapshot = await collection.where('email', '==', emailId).get();
+    console.log("querySnapshot data: "+ JSON.stringify(querySnapshot));
+
+    if(querySnapshot.docs && querySnapshot.docs[0]){
+      const userRef = querySnapshot.docs[0].ref();
+      await userRef.delete();
+      logger.info("Data is deleted from email id: "+ user);
+      return true;
+    }
+    return new Error("User not Found");
+  } catch (err) {
+    logger.error("Some error occured in delete user data using email id "+ err+" ");
+    return new Error("Some thing error occured in delete email "+ err);
+  }
+}
+
 const validateUserSchema = async (userData) => {
   try {
     await userSchema.validateAsync(userData);
@@ -175,13 +238,65 @@ const validateUserSchema = async (userData) => {
   }
 };
 
-const isUserExists = async (userId) => {
+const isUserExistsByUId = async (userId) => {
     try {
-        await getUser(userId);
+        await this.getUser(userId);
         return true;
-    } catch (error) {
+    } catch (err) {
         return false;
     }
 }
 
-module.exports = { createUser, getUser, updateUser, deleteUser, getUserByEmail, isUserExists };
+const isUserExistsByEmailId = async (emailId) => {
+  try {
+     const uid  = await this.getUserIdByEmailId(emailId);
+     if(uid) {
+      return true;
+     }
+     return false;
+  } catch (err) {
+      return false;
+  }
+}
+
+/*
+  Generating Authentication Token and Refreshtoken
+*/
+
+const generateAuthTokenByFirebase = async (data) => {
+  try {
+    const authToken = await auth.createCustomToken(data);
+    return authToken;
+  } catch (err) {
+    logger.trace("Error generating token from firebase "+ err);
+    return null;
+  }
+}
+
+const generateAuthToken = async (emailId) => {
+  try {
+    const uid = await getUserIdByEmailId(emailId);
+    const userData = {uid: uid};
+    const authToken = await jwt.sign(userData, config.AUTH_KEY, {expiresIn: "15m"});
+    logger.info("Authentication token Generated Successfully AUTHTOKEN: "+ authToken);
+
+    return authToken;
+  } catch (err) {
+    logger.error("Something error occured in Generating Authentication Token "+ err);
+    return null;
+  }
+}
+
+const generateRefreshToken = async (userData) => {
+  try {
+    const authToken = await jwt.sign(userData, config.REFRESH_AUTH_KEY, {expiresIn: "1d"});
+    logger.info("Refresh token Generated Successfully REFRESHTOKEN: "+ authToken);
+
+    return authToken;
+  } catch (err) {
+    logger.error("Something Error occurred in Generating RefreshToken "+ err);
+    return null;
+  }
+}
+
+module.exports = { createUser, getUser, updateUser, deleteUserById, deleteUserByEmail,  getUserByEmail, getUserIdByEmailId, isUserExistsByUId, generateAuthToken, generateRefreshToken };

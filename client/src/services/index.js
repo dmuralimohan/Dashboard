@@ -1,7 +1,7 @@
 import axios from "axios";
 import { cookies } from "utils";
 
-export { submitLogin } from "./user";
+export { submitLogin, submitRegister } from "./user";
 
 export const axiosInstance = axios.create({
     baseURL: "http://localhost:3001"

@@ -5,11 +5,12 @@
 const Joi = require('joi');
 
 const userSchema = Joi.object({
-  name: Joi.string().required(),
+  firstName: Joi.string().required(),
+  lastName: Joi.string().required(),
   email: Joi.string().email().required(),
   password: Joi.string().min(6).required(),
   dob: Joi.date().required(),
-  phoneNumber: Joi.string().required(),
+  country: Joi.string().required(),
   authToken: Joi.string().optional(),
   refreshToken: Joi.string().optional()
 }).options({ presence: 'required' });
