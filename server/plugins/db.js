@@ -19,7 +19,6 @@ async function dbConnector(fastify, options){
         fastify.log.info("Mongo db is connected "+ config.mongoDBURL);
     }
     catch(err){
-        console.log(err);
         fastify.log.err("Mongo db is not connected... "+ err);
     }
 }

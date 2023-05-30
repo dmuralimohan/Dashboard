@@ -39,7 +39,6 @@ const port = process.env.PRODUCTION_PORT || 3001;
 
 fastify.setErrorHandler((error, request, reply) => {
    logger.trace("Some Internal Error Occured in the Server\n"+ error);
-   console.log(error);
 
     reply.status(500).send({
         error: "Internal Server Error",
@@ -49,7 +48,6 @@ fastify.setErrorHandler((error, request, reply) => {
 
 fastify.addHook('onSend', (request, reply, payload, done) => {
     logger.info("Request is processed "+ request.url);
-    console.log("Request is sended "+ request.url);
     done();
 });
 
@@ -73,7 +71,6 @@ fastify.listen({
     host: 'localhost'
 }).then((address) => {
     logger.info("Server is Started in "+ port +" Address:"+ address);
-    console.log("Server is started");
 }).catch((err) => {
     if(err){
         logger.trace("Server is not Started, Somthing have Error\n"+ err);

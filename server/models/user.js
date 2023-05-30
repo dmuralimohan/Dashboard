@@ -120,13 +120,11 @@ const createUser = async (userData) => {
 
     this.validateUserSchema(userData);
     userData.password = await bcrypt.hash(userData.password, 10);
-    console.log(`hashed password ${userData.password}`);
     logger.info("Registered user data is:"+JSON.stringify(userData))
     const userRef = collection.doc();
     await userRef.set(userData);
   
     logger.info("User has registered successfully " + userRef.id);
-    console.log("User has registered successfully "+ userRef.id);
 
     return userRef;
   } catch (error) {
@@ -213,9 +211,7 @@ const deleteUserById = async (userId) => {
 
 const deleteUserByEmail = async (emailId) => {
   try {
-    console.log("emailid: "+ emailId);
     const querySnapshot = await collection.where('email', '==', emailId).get();
-    console.log("querySnapshot data: "+ JSON.stringify(querySnapshot));
 
     if(querySnapshot.docs && querySnapshot.docs[0]){
       const userRef = querySnapshot.docs[0].ref();

@@ -36,7 +36,6 @@ async function signIn(request, reply) {
             });
             
         }
-        console.log(user);
 
         const authToken = await UserModel.generateAuthToken(user.email);
         const refreshToken = await UserModel.generateRefreshToken({email: user.email});
