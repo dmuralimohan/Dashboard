@@ -35,10 +35,11 @@ export const SlideShow = (props) => {
     useEffect( () => {
         if(duration > 0){
             let id = setInterval(next , 2500);
+            
 
             return () => clearInterval(id);
         }
-    },[currentIndex]);
+    },[currentIndex, duration]);
 
     return(
         <div className="slideshow">

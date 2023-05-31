@@ -58,9 +58,9 @@ fastify.addHook("onClose", (instance, done) => {
 
 //To disable cors
 fastify.register(fastifyCors, {
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: '*'
+    origin: "*",
+    methods: ["*"],
+    allowedHeaders: "*"
 });
 
 // fastify.register(require('./plugins/db'));

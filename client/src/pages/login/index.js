@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { SlideShow, Input } from "components";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -34,10 +34,28 @@ const Login = () => {
   
   const images = [<Slide1 />, <Slide2 />, <Slide3 />, <Slide4 />];
   const { register, handleSubmit, formState: {errors}, setError} = useForm();
-  const [passwordLabel, setPasswordLabel] = useState({icon: "bi bi-eye-slash-fill", type:"password"})
+  const [passwordLabel, setPasswordLabel] = useState({icon: "bi bi-eye-slash-fill", type:"password"});
+  const [duration, setDuration] = useState(2000);
+  const targetRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
   const [errorMessage, setErrorMessage] = useState(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      const targetElement = entries[0];
+      if (!targetElement.isIntersecting) {
+        setDuration(0);
+      }
+      else setDuration(2000);
+    }, [duration]);
+
+    observer.observe(targetRef.current);
+
+    // return () => {
+    //   observer.unobserve(targetRef.current);
+    // };
+  }, []);
 
   const onSubmit = async (data) => {
     try{
@@ -45,9 +63,9 @@ const Login = () => {
         const responseCode = await submitLogin(data);
         console.log(responseCode);
 
-        //const { from } = location.state || { from: { pathname: '/' } };
+        const { from } = location.state || { from: { pathname: '/' } };
         
-        //return navigate(from, { replace: true });
+        return navigate(from, { replace: true });
     }
     catch(err)
     {
@@ -68,7 +86,9 @@ const Login = () => {
   return (
     <div className="container">
 
-      <SlideShow imageData={images} duration={2000} isButton={false} />
+      <div id="slideShow" ref={targetRef}>
+        <SlideShow imageData={images} duration={duration} isButton={false} />
+      </div>
 
       <form method="post" onSubmit={handleSubmit(onSubmit)} className="form" autoComplete="on">
          <FormHeader />

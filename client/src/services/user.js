@@ -13,6 +13,14 @@ export const submitLogin = (data) =>{
     }).catch(err => err);
 }
 
+export const isExistsEmail = (data) => {
+    return axiosInstance.post("/validateEmail",{
+        data
+    }).then(res => {
+        return res;
+    }).catch(err => new Error(err));
+}
+
 export const submitRegister = (data) =>{
     return axiosInstance.post("/signup", {
         data

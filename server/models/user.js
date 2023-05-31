@@ -111,14 +111,14 @@ const collection = db.collection('users');
 
 const createUser = async (userData) => {
   try {
-    const emailId = userData.emailId;
+    const emailId = userData.email;
     const isExists = await isUserExistsByEmailId(emailId);
 
     if(isExists) {
-      return "User has Already Exists";
+      return {error: "User has Already Exists"};
     }
 
-    this.validateUserSchema(userData);
+    validateUserSchema(userData);
     userData.password = await bcrypt.hash(userData.password, 10);
     logger.info("Registered user data is:"+JSON.stringify(userData))
     const userRef = collection.doc();
@@ -128,7 +128,7 @@ const createUser = async (userData) => {
 
     return userRef;
   } catch (error) {
-    return error;
+    return {error: "Something went wrong from createUser"};
   }
 };
 
@@ -182,7 +182,7 @@ const getUserIdByEmailId = async (emailId) => {
         return userId;
       }
     } catch (err) {
-      logger.trace("Something Error occured in getUserByEmailId1 "+ err);
+      logger.trace("Something Error occured in getUserByEmailId "+ err);
       return null;
     }
 }
@@ -229,8 +229,8 @@ const deleteUserByEmail = async (emailId) => {
 const validateUserSchema = async (userData) => {
   try {
     await userSchema.validateAsync(userData);
-  } catch (error) {
-    throw new Error('Invalid user data');
+  } catch (err) {
+    throw new Error('Invalid user data '+ err);
   }
 };
 
@@ -245,8 +245,9 @@ const isUserExistsByUId = async (userId) => {
 
 const isUserExistsByEmailId = async (emailId) => {
   try {
-     const uid  = await this.getUserIdByEmailId(emailId);
-     if(uid) {
+     const uid  = await getUserByEmail(emailId);
+
+     if(uid.email) {
       return true;
      }
      return false;

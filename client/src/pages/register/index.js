@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Input, Button, Select, Option } from "components";
 import countryCodes from "country-codes-list";
-import { submitRegister } from "services";
+import { submitRegister, isExistsEmail } from "services";
 import { DateInfo } from "common";
 
 import "./register.page.css";
@@ -150,8 +150,9 @@ const Register = ({email}) => {
     const [userEmail, setUserEmail] = useState(undefined);
     const [animation, setAnimation] = useState("forward 0.25s linear");
 
-    const isNewAccount = async () =>{
-        return false;
+    const isNewAccount = async (emailId) =>{
+        const newEmail = await isExistsEmail({email: emailId});
+        return newEmail ? newEmail.message ?? newEmail.error : "Please Try After Sometime";
     }
     const handlePreview = () =>{
         setAnimation("backward 0.25s linear");
@@ -173,10 +174,7 @@ const Register = ({email}) => {
                 message: `${email} is already an account. Please try a different email address.`
             });
         }else{
-            setTimeout(() =>{
-                handleNext();
-                setLoading(false);
-            }, 2000);
+            handleNext();
         }
     }
     if(email){
@@ -326,6 +324,13 @@ const Register = ({email}) => {
                     </Component>
                 }
             </div>
+            {
+                currentIndex == 4 &&
+                <Component
+                
+                >
+                </Component>
+            }
             { currentIndex === 3 &&
                 <Button type= "submit" value= "Next" className= "registerButton" />
             }

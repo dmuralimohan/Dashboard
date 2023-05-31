@@ -14,6 +14,9 @@ body{
     margin: 5% auto auto auto;
     transform: all 1s;
 }
+#slideShow{
+    display: block;
+}
 .container > .form{
     width: 100%;
     text-align: justify;
@@ -121,6 +124,9 @@ body{
         width: 90%;
         border: none;
         background-color: transparent;
+    }
+    #slideShow{
+        display: none;
     }
     .container > .form > .header > img{
         height: 90px;

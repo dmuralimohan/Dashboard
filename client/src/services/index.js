@@ -1,7 +1,7 @@
 import axios from "axios";
 import { cookies } from "utils";
 
-export { submitLogin, submitRegister } from "./user";
+export { submitLogin, submitRegister, isExistsEmail } from "./user";
 
 export const axiosInstance = axios.create({
     baseURL: "http://localhost:3001"
@@ -17,6 +17,7 @@ axiosInstance.interceptors.request.use(function(request){
 );
 
 axiosInstance.interceptors.response.use((response) => {
+    console.log(response.baseURL);
     return response;
 }, async (err) => {
     const originalRequest = err.config;

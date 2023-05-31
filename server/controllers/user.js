@@ -41,16 +41,20 @@ async function signIn(request, reply) {
         const refreshToken = await UserModel.generateRefreshToken({email: user.email});
         logger.info(`Token Created Successfully AUTHTOKEN: ${authToken}, REFRESHTOKEN: ${refreshToken}`);
 
+        let date = new Date();
         const authCookie = Utils.createCookie({data:`AUTH_TOKEN=${authToken}`});
-        const refreshCookie = Utils.createCookie({expires: new Date(new Date().getDate() + 1),data: `REFRESH_TOKEN=${refreshToken}`});
+        date.setDate(date.getDate() + 1);
+        const refreshCookie = Utils.createCookie({expires: date,data: `REFRESH_TOKEN=${refreshToken}`});
+
+        console.log(authCookie, refreshCookie);
 
         reply.header("Set-Cookie", [authCookie, refreshCookie]);
-
-        logger.info(`User Logged in Successfully USERNAME: ${username} in ${new Date()}`);
 
         reply.status(200).send({
             message: "Login Successful and Cookie setting from the header"
         });
+
+        logger.info(`User Logged in Successfully USERNAME: ${username} in ${new Date()}`);
         
     } catch(err){
         logger.error(`Something error occurred in login "+ ${err}`);
@@ -81,13 +85,27 @@ async function signUp(request, reply){
             userId: user.id
         });
     } else {
-        return reply.status(400).send({
-            message: "Unauthorized response"
-        })
+        return reply.status(400).send(user.error);
     }
+}
+
+async function isNewUserId(request, reply){
+    const { email } = request.body.data.email;
+    console.log(request.body.data.email);
+    if(!email){
+        reply.status(404).send({
+            email:"Invalid Email Address 404"
+        });
+    }
+    const isNewUser = UserModel.isUserExistsByEmailId(email);
+    
+    reply.status(200).send({
+        message: isNewUser
+    });
 }
 
 module.exports = {
     signIn,
-    signUp
+    signUp,
+    isNewUserId
 };
