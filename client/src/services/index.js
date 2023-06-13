@@ -9,7 +9,6 @@ export const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(function(request){
     request.headers.Authorization = cookies().get("AUTH_TOKEN"); 
-    console.log(cookies().get("AUTH_TOKEN"));
     return request;
     },function (err){
         return Promise.reject(err);
@@ -17,7 +16,6 @@ axiosInstance.interceptors.request.use(function(request){
 );
 
 axiosInstance.interceptors.response.use((response) => {
-    console.log(response.baseURL);
     return response;
 }, async (err) => {
     const originalRequest = err.config;

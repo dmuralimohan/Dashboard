@@ -153,10 +153,10 @@ const getUserByEmail = async (emailId) => {
         const userRecord = await auth.getUserByEmail(emailId);
       */
       const querySnapshot = await collection.where('email', '==', emailId).get();
-      logger.info(querySnapshot.docs && querySnapshot.docs[0]);
+      logger.info(querySnapshot.docs);
 
       if(querySnapshot.docs && querySnapshot.docs[0]){
-        const userData = querySnapshot.docs[0].data();
+        const userData = await querySnapshot.docs[0].data();
         logger.info("Data is fetched from email id: "+ userData);
         logger.info("The data is: "+ JSON.stringify(querySnapshot.docs[0].data()));
         return userData;
@@ -246,13 +246,15 @@ const isUserExistsByUId = async (userId) => {
 const isUserExistsByEmailId = async (emailId) => {
   try {
      const uid  = await getUserByEmail(emailId);
+     logger.info(`Existing checking this email id: ${emailId} : ${uid}`);
 
-     if(uid.email) {
+     if( uid && uid.email) {
       return true;
      }
      return false;
   } catch (err) {
-      return false;
+      logger.error(err);
+      throw new Error(err);
   }
 }
 
@@ -296,4 +298,4 @@ const generateRefreshToken = async (userData) => {
   }
 }
 
-module.exports = { createUser, getUser, updateUser, deleteUserById, deleteUserByEmail,  getUserByEmail, getUserIdByEmailId, isUserExistsByUId, generateAuthToken, generateRefreshToken };
+module.exports = { createUser, getUser, updateUser, deleteUserById, deleteUserByEmail,  getUserByEmail, getUserIdByEmailId, isUserExistsByUId, isUserExistsByEmailId, generateAuthToken, generateRefreshToken };

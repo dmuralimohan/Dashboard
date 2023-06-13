@@ -152,7 +152,7 @@ const Register = ({email}) => {
 
     const isNewAccount = async (emailId) =>{
         const newEmail = await isExistsEmail({email: emailId});
-        return newEmail ? newEmail.message ?? newEmail.error : "Please Try After Sometime";
+        return newEmail ? newEmail.message ?? newEmail.Error : "Please Try After Sometime";
     }
     const handlePreview = () =>{
         setAnimation("backward 0.25s linear");
@@ -163,19 +163,26 @@ const Register = ({email}) => {
         return setCurrentIndex(prev => ++ prev);
     }
 
-    const handleEmailSubmit = async (name) =>{
+    const handleEmailSubmit = async (name) => {
         setLoading(true);
         const email = getValues(name);
         setUserEmail(email);
         const alreadyExisted = await isNewAccount(email);
-        if(alreadyExisted){
-            setLoading(false);
-            return setError("email", {
+
+        if(alreadyExisted === true) {
+            setError("email", {
                 message: `${email} is already an account. Please try a different email address.`
             });
-        }else{
+        }else if(alreadyExisted) {
+            setError("email", {
+                message: `Something error please try again after sometime...`
+            });
+        }
+        else {
             handleNext();
         }
+
+        return setLoading(false);
     }
     if(email){
         register({name: "email"}, {value: email});

@@ -64,44 +64,56 @@ async function signIn(request, reply) {
 }
 
 async function signUp(request, reply){
-    const { email, password, dob, country, firstname, lastname} = request.body.data;
+    try {
+        const { email, password, dob, country, firstname, lastname} = request.body.data;
 
-    logger.info(`User Signup Request landed...\n ${JSON.stringify(request.body.data)}`);
+        logger.info(`User Signup Request landed...\n ${JSON.stringify(request.body.data)}`);
 
-    if(!email || !password || !dob || !country || !firstname || !lastname)
-    {
-        logger.trace("Some data are missed, please give requested Data");
-        return reply.status(422).send({
-            message: "The data is insufficient"
-        });
-    }
+        if(!email || !password || !dob || !country || !firstname || !lastname)
+        {
+            logger.trace("Some data are missed, please give requested Data");
+            return reply.status(422).send({
+                message: "The data is insufficient"
+            });
+        }
 
-    const user = await UserModel.createUser(request.body.data);
+        const user = await UserModel.createUser(request.body.data);
 
-    if(user.id)
-    {
-        return reply.status(200).send({
-            message: "You have Registered Sucessfully",
-            userId: user.id
-        });
-    } else {
-        return reply.status(400).send(user.error);
+        if(user.id)
+        {
+            return reply.status(200).send({
+                message: "You have Registered Sucessfully",
+                userId: user.id
+            });
+        } else {
+            return reply.status(400).send(user.error);
+        }
+    } catch(err) {
+        logger.error(err);
+        throw new Error(err);
     }
 }
 
 async function isNewUserId(request, reply){
-    const { email } = request.body.data.email;
-    console.log(request.body.data.email);
-    if(!email){
-        reply.status(404).send({
-            email:"Invalid Email Address 404"
+    try {
+        const { email } = request.body.data;
+        console.log(request.body.data.email);
+        if(!email){
+            reply.status(404).send({
+                email:"Invalid Email Address 404"
+            });
+        }
+        const isNewUser = await UserModel.isUserExistsByEmailId(email);
+        console.log(isNewUser);
+        logger.info(`New User or not: ${email} : ${isNewUser}`);
+        
+        await reply.status(200).send({
+            message: isNewUser
         });
+    } catch(err) {
+        logger.error(err);
+        throw new Error(err);
     }
-    const isNewUser = UserModel.isUserExistsByEmailId(email);
-    
-    reply.status(200).send({
-        message: isNewUser
-    });
 }
 
 module.exports = {
