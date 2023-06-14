@@ -9,7 +9,7 @@ export const submitLogin = (data) =>{
     }).then(res => {
         console.log("TOKEN GENERATED SUCCESSFULLY ");
         console.log("TOKEN: "+ cookies.get("AUTH_TOKEN"));
-        return res;
+        return res.data;
     }).catch(err => err);
 }
 
@@ -17,7 +17,7 @@ export const isExistsEmail = (data) => {
     return axiosInstance.post("/validateEmail",{
         data
     }).then(res => {
-        return res;
+        return res.data;
     }).catch(err => new Error(err));
 }
 
@@ -26,6 +26,6 @@ export const submitRegister = (data) =>{
         data
     }).then( res  => {
         console.log(res);
-        return res;
+        return res.data;
     }).catch(err  => err);
 }

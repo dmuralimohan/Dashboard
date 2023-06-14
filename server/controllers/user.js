@@ -46,8 +46,6 @@ async function signIn(request, reply) {
         date.setDate(date.getDate() + 1);
         const refreshCookie = Utils.createCookie({expires: date,data: `REFRESH_TOKEN=${refreshToken}`});
 
-        console.log(authCookie, refreshCookie);
-
         reply.header("Set-Cookie", [authCookie, refreshCookie]);
 
         reply.status(200).send({
@@ -96,15 +94,13 @@ async function signUp(request, reply){
 
 async function isNewUserId(request, reply){
     try {
-        const { email } = request.body.data;
-        console.log(request.body.data.email);
+        const email = request.body.data.email.toString();
         if(!email){
             reply.status(404).send({
                 email:"Invalid Email Address 404"
             });
         }
         const isNewUser = await UserModel.isUserExistsByEmailId(email);
-        console.log(isNewUser);
         logger.info(`New User or not: ${email} : ${isNewUser}`);
         
         await reply.status(200).send({

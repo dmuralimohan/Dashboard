@@ -100,14 +100,14 @@ const jwt = require('jsonwebtoken');
 
 const { auth, db } = require('../plugins/firebase');
 const userSchema = require('../schemas/userSchema.js');
-const logger = require('../plugins/fastify').logger;
+const { logger } = require('../plugins/fastify');
 const config = require('../config/config');
 
 /*
   Interacting Cloud firestore from firebase
 */
 
-const collection = db.collection('users');
+const collection = db.collection("users");
 
 const createUser = async (userData) => {
   try {
@@ -132,6 +132,18 @@ const createUser = async (userData) => {
   }
 };
 
+const getAllUsers = async () => {
+  try {
+    const userList = await auth.listUsers();
+    const users = userList.users.map((userRecord) => userRecord.toJson());
+
+    return users;
+  } catch (err) {
+    logger.error("Error from getAllUsers "+ err);
+    throw new Error(err);
+  }
+}
+
 const getUser = async (userId) => {
   const userRef = collection.doc(userId);
   const userSnapshot = await userRef.get();
@@ -153,7 +165,7 @@ const getUserByEmail = async (emailId) => {
         const userRecord = await auth.getUserByEmail(emailId);
       */
       const querySnapshot = await collection.where('email', '==', emailId).get();
-      logger.info(querySnapshot.docs);
+      logger.info("user data: "+ querySnapshot.docs);
 
       if(querySnapshot.docs && querySnapshot.docs[0]){
         const userData = await querySnapshot.docs[0].data();
@@ -162,12 +174,12 @@ const getUserByEmail = async (emailId) => {
         return userData;
       }
 
-      logger.trace("User not Found : "+ emailId);
+      logger.info("User not Found : "+ emailId);
       
       return null;
     } catch (error) {
-      logger.trace("Somethign error occured in Fetching Data from Email id ");
-      return null;
+      logger.trace("Somethign error occured in Fetching Data from Email id "+ error);
+      throw new Error(error);
     }
 }
 
@@ -176,14 +188,18 @@ const getUserIdByEmailId = async (emailId) => {
       logger.info("Getting email to get User Details from getUserByEmailIdAdmin... EmailId is: "+ emailId);
 
       const userRecord = await auth.getUserByEmail(emailId);
-      const userId = userRecord.uid;
+      const userId = userRecord && userRecord.uid ? userRecord.uid : null;
 
-      if(userId){
-        return userId;
-      }
+      logger.info("Getting userRecord from [getUserIdEmailId] "+ userRecord +"UserId: "+ userId);
+
+      return userId;
     } catch (err) {
-      logger.trace("Something Error occured in getUserByEmailId "+ err);
-      return null;
+      if(err.code.indexOf("user-not-found")) {
+        return false;
+      } else {
+        logger.error("Something error occured in getUserIdByEmailId");
+        throw new Error(err);
+      }
     }
 }
 

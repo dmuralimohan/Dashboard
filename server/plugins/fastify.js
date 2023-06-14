@@ -6,10 +6,15 @@ const fs = require('fs');
 const path = require('path');
 
 const logDir = path.join(__dirname, '../logs');
+
 if(!fs.existsSync(logDir)){
     fs.mkdirSync(logDir);
 }
 const logFilePath = path.join(logDir, 'app.log');
+if (fs.existsSync(logFilePath)) {
+    fs.unlinkSync(logFilePath);
+}
+
 const logStream = fs.createWriteStream(logFilePath, { flags: 'a' });
 
 const logTracer = (log) => {

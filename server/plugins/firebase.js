@@ -6,6 +6,7 @@ require('dotenv').config();
 const admin = require('firebase-admin');
 const config = require('../config/config');
 const serviceAccount = require('./keyfile.json');
+const { logger } = require('./fastify.js');
 
 const firebaseConfig = {
     apiKey: config.apiKey,
@@ -17,21 +18,23 @@ const firebaseConfig = {
     measurementId: config.measurementId
   };
 
+let auth, db;
+
 //admin.initializeApp(firebaseConfig);
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
-
-/*admin.database.enableLogging(true);
-admin.firestore().settings({
-    host: 'localhost:3001',
-    ssl: false,
-    experimentalForceLongPolling: true,
-    logLevel: 'debug',
-});*/
-
-const auth = admin.auth();
-const db = admin.firestore();
+try {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: "https://dashboard-6dd90-default-rtdb.firebaseio.com"
+  });
+  
+  auth = admin.auth();
+  db = admin.firestore();
+  
+  logger.info("firebase is connected ");
+} catch(err) {
+  logger.error(err);
+  throw new Error(err);
+}
 
 module.exports = {
     admin,

@@ -152,6 +152,7 @@ const Register = ({email}) => {
 
     const isNewAccount = async (emailId) =>{
         const newEmail = await isExistsEmail({email: emailId});
+        console.log(newEmail);
         return newEmail ? newEmail.message ?? newEmail.Error : "Please Try After Sometime";
     }
     const handlePreview = () =>{

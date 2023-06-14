@@ -1,7 +1,6 @@
 const fastifyCors = require('fastify-cors');
-const fastifyJs = require('./plugins/fastify');
-const fastify = fastifyJs.fastify;
-const logger = fastifyJs.logger;
+const { fastify , logger } = require('./plugins/fastify');
+const { admin } = require('./plugins/firebase');
 
 // const logDir = path.join(__dirname, 'logs');
 // if(!fs.existsSync(logDir)){
