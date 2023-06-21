@@ -11,6 +11,7 @@ const userSchema = Joi.object({
   password: Joi.string().min(6).required(),
   dob: Joi.date().required(),
   country: Joi.string().required(),
+  verifyCode: Joi.number().required(),
   authToken: Joi.string().optional(),
   refreshToken: Joi.string().optional()
 }).options({ presence: 'required' });

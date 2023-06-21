@@ -49,7 +49,7 @@ async function signIn(request, reply) {
         reply.header("Set-Cookie", [authCookie, refreshCookie]);
 
         reply.status(200).send({
-            message: "Login Successful and Cookie setting from the header"
+            message: "Login Successful"
         });
 
         logger.info(`User Logged in Successfully USERNAME: ${username} in ${new Date()}`);

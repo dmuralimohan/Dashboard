@@ -18,6 +18,7 @@ export const Input = ({
   onChange = null,
   iconClick = null,
   className = null,
+  disabled = null,
   children
 }) => {
   const[isError, setError] = useState(false);
@@ -45,6 +46,7 @@ export const Input = ({
           { ...typeof register === "object" ? register : "" }
           style={{borderBottom: isError ? "1px solid #ff0000": ""}}
           autoComplete= "off"
+          disabled = { disabled }
         /> :
         <span>{value}</span>
       }

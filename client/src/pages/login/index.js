@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { SlideShow, Input } from "components";
+import { SlideShow, Input, Toast, ToastContainer } from "components";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { submitLogin } from "services";
@@ -59,13 +59,30 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     try{
+        console.log(data);
         console.log(`Data before passing ${JSON.stringify(data)}`);
-        const responseCode = await submitLogin(data);
-        console.log(responseCode);
+        const result = await submitLogin(data);
+        console.log(result);
 
-        const { from } = location.state || { from: { pathname: '/' } };
+        if(result) {
+          Toast({
+            message: result.message || "Something went wrong please, try again later...",
+            position: "top-center",
+            type: result.error ? "error" : "success",
+            themeType: "light",
+            delay: 3000,
+            pauseOnHover: true,
+            closeIcon: true
+          });
+
+          if(!result.error) {
+            setTimeout(() => {
+              const { from } = location.state || { from: { pathname: '/' } };
         
-        return navigate(from, { replace: true });
+              return navigate(from, { replace: true });
+            }, 3000);
+          }
+        }
     }
     catch(err)
     {
@@ -129,6 +146,7 @@ const Login = () => {
             <NavLink to="/register">Click to Create a Account</NavLink>
           </p>
       </form>
+      <ToastContainer />
     </div>
   );
 };

@@ -8,7 +8,8 @@ export const submitLogin = (data) =>{
         data
     }).then(res => {
         console.log("TOKEN GENERATED SUCCESSFULLY ");
-        console.log("TOKEN: "+ cookies.get("AUTH_TOKEN"));
+        console.log(res);
+
         return res.data;
     }).catch(err => err);
 }

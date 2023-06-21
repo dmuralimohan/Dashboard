@@ -4,7 +4,6 @@
 .register{
     background-color: white;
     width: 35%;
-    min-height: 20vh;
     padding: 13px 18px;
     transition: all in 1s;
     margin: 5% auto;
@@ -41,7 +40,6 @@
     border: 2px solid #0067b8;
     animation: load 1.5s linear infinite;
     position: absolute;
-    transition: all 2s;
 }
 @keyframes load{
     0%{
@@ -54,7 +52,7 @@
     }
 }
 #signUp{
-    animation: backward 0.25s linear;
+    animation: backward 0.50s linear;
     transition: all 1s;
     position: relative;
 }
@@ -78,8 +76,8 @@
     font-size: 17px;
     border: none;
     border-bottom: 1px solid black;
-    margin-bottom: 15px;
-    padding: 6px 10px;
+    margin-bottom: 20px;
+    padding: 5px 10px;
     width: 98%;
     outline: none;
 }
@@ -94,8 +92,10 @@
 }
 #signUp button, .registerButton{
     display: block;
+    float: right;
+    bottom: 0%;
     right: 2%;
-    position: absolute;
+    position: relative;
     background-color: #0067b8;
     border: 1px solid #0078d7;
     padding: 8px 10px;
@@ -116,10 +116,11 @@
 .showpswd > *{
     cursor: pointer;
 }
-.showpswd input[type="checkbox"]{
+.showpswd input[type="checkbox"], #needPRI{
     float: left !important;
     width: 20px !important;
     height: 18px;
+    cursor: pointer;
 }
 .showpswd label{
     vertical-align: middle;
@@ -151,6 +152,14 @@
     font-size:14px;
     text-decoration: none;
     color: #0078d7;
+}
+.link{
+    display: inline;
+    text-decoration: none;
+    color: #075fa7;
+}
+.link:hover{
+    text-decoration: underline;
 }
 #phoneLink:hover{
     color: gray;

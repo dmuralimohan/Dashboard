@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Input, Button, Select, Option } from "components";
+import { Input,Button, Select, Option, AlertBanner, ToastContainer, Toast } from "components";
 import countryCodes from "country-codes-list";
 import { submitRegister, isExistsEmail } from "services";
 import { DateInfo } from "common";
+import { useNavigate } from "react-router-dom";
 
 import "./register.page.css";
 
-const InputComponent = ({type, placeholder, errors, name, label, value, register, children}) => {
+const InputComponent = ({type, placeholder, errors, name, label, value, register, className, children}) => {
 
     return(
         <>
@@ -20,6 +21,7 @@ const InputComponent = ({type, placeholder, errors, name, label, value, register
             value = {value}
             register = {register}
             label= {label}
+            className= {className}
         >
             {children}
         </Input>
@@ -29,10 +31,10 @@ const InputComponent = ({type, placeholder, errors, name, label, value, register
 
 const Header = ({title, content}) =>{
     return(
-        <>
-        <h2>{title}</h2>
-        <p>{content}</p>
-        </>
+        <div>
+            <h2>{title}</h2>
+            <p>{content}</p>
+        </div>
     )
 }
 const handleSubmit = async(event, trigger, name, callBack) =>{
@@ -79,8 +81,6 @@ const Component = ({callBack, title, style, buttonValue= null, isInput, placehol
                 value= {buttonValue}
                 />
             }
-            <br />
-            <br />
         </div>
     )
 }
@@ -141,7 +141,10 @@ const Register = ({email}) => {
         password: "Murali@333",
         firstname: "Muralimohan",
         lastname: "D",
-        dob: ""
+        dob: "06-09-2002",
+        birthdate: "6",
+        birthmonth: "9",
+        birthyear: "2002"
     }
     const {register, handleSubmit, formState:{errors}, setError, trigger, getValues, setValue} = useForm({defaultValues});
     const [showPassword, setShowPassword] = useState(false);
@@ -149,6 +152,7 @@ const Register = ({email}) => {
     const [isLoading, setLoading] = useState(false);
     const [userEmail, setUserEmail] = useState(undefined);
     const [animation, setAnimation] = useState("forward 0.25s linear");
+    const navigate = useNavigate();
 
     const isNewAccount = async (emailId) =>{
         const newEmail = await isExistsEmail({email: emailId});
@@ -156,12 +160,16 @@ const Register = ({email}) => {
         return newEmail ? newEmail.message ?? newEmail.Error : "Please Try After Sometime";
     }
     const handlePreview = () =>{
-        setAnimation("backward 0.25s linear");
+        setAnimation("backward 0.30s linear");
         return setCurrentIndex(prev => -- prev);
     }
     const handleNext = () =>{
         setAnimation("forward 0.25s linear");
         return setCurrentIndex(prev => ++ prev);
+    }
+
+    let timeoutCallback = (callback, delay) => {
+        return setTimeout(() => callback(), delay);
     }
 
     const handleEmailSubmit = async (name) => {
@@ -190,6 +198,7 @@ const Register = ({email}) => {
         //handleEmailSubmit(email);
     }
     const onFormSubmit = async (d) => {
+        setLoading(true);
         d.dob = `${d.birthdate}-${d.birthmonth}-${d.birthyear}`;
         delete d.birthdate;
         delete d.birthmonth;
@@ -197,7 +206,22 @@ const Register = ({email}) => {
 
         console.log(d);
         const result = await submitRegister(d);
-        console.log(result);
+        if(result){
+            console.log(result);
+            timeoutCallback(() => {
+                setLoading(false);
+                Toast({
+                    message: result.message || "Something went wrong please, try again later...",
+                    position: "top-center",
+                    type: result.message ? "success" : "error",
+                    themeType: "light",
+                    delay: 3000,
+                    pauseOnHover: true,
+                    closeIcon: true
+                });
+                return timeoutCallback(() => navigate({pathname:"/login"}, {replace: true}), 3000);
+            }, 1000);
+        }
     }
     return(
         <form className={isLoading ? "register loading" : "register"} disabled = {isLoading} method= "post" onSubmit={handleSubmit(onFormSubmit)}>
@@ -208,7 +232,7 @@ const Register = ({email}) => {
                     {userEmail}
                 </p>
             </div> }
-            <div className= "signUpContent">
+            <div className= "signUpContent" style={{opacity: isLoading ? 0.8 : 1}}>
                 { currentIndex === 0 && 
                     <Component
                     key= "EmailInput"
@@ -271,7 +295,7 @@ const Register = ({email}) => {
                     style= {{animation: animation}}
                     callBack= {handleNext}
                     isInput = {true}
-                    type= "text"
+                    type= {["text"]}
                     title= "What's your name?"
                     content= "We need just a little more info to set up your account."
                     buttonValue= "Next"
@@ -295,9 +319,9 @@ const Register = ({email}) => {
                     isInput= {false}
                     style= {{animation: animation}}
                     name= {["birthdate"]}
-                    trigger = { trigger }
+                    trigger = {trigger}
                     callBack= {handleNext}
-                    buttonValie = "Next"
+                    buttonValue = "Next"
                     title= "What's your birthdate?"
                     content= "If a child uses this device, select their date of birth to create a child account."
                     >
@@ -331,17 +355,34 @@ const Register = ({email}) => {
                         </small>
                     </Component>
                 }
+                {
+                    currentIndex == 4 &&
+                    <Component
+                    key= "userEmail"
+                    title= "Verify email"
+                    style= {{animation: animation}}
+                    isInput= {false}
+                    name={["verifyCode"]}
+                    trigger = {trigger}
+                    callBack= {handleNext}
+                    >
+                        <p>Enter the code we sent to<br /><strong>{userEmail}</strong>. If you didn't get the email, check your junk folder or <a href="#" className= "link">try again</a>.</p>
+                        <InputComponent type="tel" name="verifyCode" placeholder={"Enter code"} register={register("verifyCode",{required:"This is information is required."})} errors= {errors} />
+                        <Input
+                                key= "isNeedPRI"
+                                type= "checkbox"
+                                id="needPRI"
+                                disabled = {isLoading ? true : false}
+                            >
+                                <label htmlFor="needPRI">I would like information, tips, and offers about our products and services.</label>
+                        </Input>
+                    </Component>
+                }
             </div>
-            {
-                currentIndex == 4 &&
-                <Component
-                
-                >
-                </Component>
-            }
-            { currentIndex === 3 &&
+            { currentIndex === 4 &&
                 <Button type= "submit" value= "Next" className= "registerButton" />
             }
+        <ToastContainer />
         </form>
     )
 }
